@@ -1,6 +1,7 @@
 package com.concat.projetointegrador.unit;
 
 import com.concat.projetointegrador.dto.BatchStockFilterDTO;
+import com.concat.projetointegrador.dto.BatchStockOrdinationDTO;
 import com.concat.projetointegrador.dto.ProductDTO;
 import com.concat.projetointegrador.exception.EntityNotFound;
 import com.concat.projetointegrador.model.*;
@@ -67,7 +68,7 @@ class BatchStockServiceTest {
                 BatchStock.builder()
                         .id(0L)
                         .category(Category.CONGELADOS)
-                        .currentQuantity(10)
+                        .currentQuantity(5)
                         .initialQuantity(10)
                         .currentTemperature(9)
                         .initialTemperature(8)
@@ -206,6 +207,24 @@ class BatchStockServiceTest {
     void shouldFilterBatchStocksInvalidParameter() {
         Throwable exception = assertThrows(InvalidParameterException.class, () -> service.filterBatchStocks(mockListInboundOrder(), 800, "congelados", 9));
         assertEquals("O valor de asc deve ser 0 ou 1!", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnTheBestSellingProducts() {
+        List<BatchStockOrdinationDTO> batchStocks;
+        Mockito.when(batchStockRepositoryMock.findAll()).thenReturn(mockListBatchStock());
+        batchStocks = service.listProductsForQuantity();
+        assertEquals(0, batchStocks.get(0).getQuantity());
+        assertEquals(mockProduct().getName(), batchStocks.get(0).getProduct().getName());
+        assertEquals(5, batchStocks.get(1).getQuantity());
+        assertEquals(mockProduct().getName(), batchStocks.get(1).getProduct().getName());
+    }
+
+    @Test
+    void shouldReturnBatchStockEntityNotFound() {
+        Mockito.when(batchStockRepositoryMock.findAll()).thenReturn(new ArrayList<>());
+        Throwable exception = assertThrows(EntityNotFound.class, () -> service.listProductsForQuantity());
+        assertEquals("Não existem batchstock registados!", exception.getMessage());
     }
 
 }

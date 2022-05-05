@@ -1,7 +1,7 @@
 package com.concat.projetointegrador.controller;
 
 import com.concat.projetointegrador.dto.BatchStockFilterDTO;
-import com.concat.projetointegrador.model.BatchStock;
+import com.concat.projetointegrador.dto.BatchStockOrdinationDTO;
 import com.concat.projetointegrador.model.InboundOrder;
 import com.concat.projetointegrador.service.BatchStockService;
 import com.concat.projetointegrador.service.InboundOrderService;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -51,4 +50,12 @@ public class BatchStockController {
         return ResponseEntity.status(HttpStatus.OK).body(batchStockFilterDTOList);
     }
 
+    /**
+     * Filter the best selling products
+     * @return the best selling products
+     */
+    @GetMapping("/stock")
+    public ResponseEntity<List<BatchStockOrdinationDTO>> listProductsForQuantity() {
+        return ResponseEntity.ok(batchStockService.listProductsForQuantity());
+    }
 }
