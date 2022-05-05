@@ -1,6 +1,12 @@
 package com.concat.projetointegrador.integration;
 
+import com.concat.projetointegrador.dto.BatchStockOrdinationDTO;
+import com.concat.projetointegrador.dto.InboundOrderDTO;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -75,6 +81,30 @@ public class BatchStockControllerTest {
         for (int i = 0; i < dueDateList.size(); i++) {
             assertEquals(firstDate.plusDays(i), dueDateList.get(i));
         }
+    }
+
+    @Test
+    public void shouldReturnTheProductsByMoreSold() throws Exception {
+        String payload = "[{\"quantity\":0,\"product\":{\"name\":\"frango\",\"volume\":1,\"price\":20.00,\"category\":\"CONGELADOS\"}},{\"quantity\":0,\"product\":{\"name\":\"frango\",\"volume\":1,\"price\":20.00,\"category\":\"CONGELADOS\"}},{\"quantity\":0,\"product\":{\"name\":\"frango\",\"volume\":1,\"price\":20.00,\"category\":\"CONGELADOS\"}}]";
+
+        MvcResult response = mockMvc.perform(get("/batchstock/stock")
+                .with(
+                        user("Supervisor")
+                                .password("123")
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andReturn();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+
+        String jsonReturned = response.getResponse().getContentAsString();
+
+        assertEquals(payload, jsonReturned);
     }
 
     @Test

@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.concat.projetointegrador.dto.BatchStockDTO;
 import com.concat.projetointegrador.dto.BatchStockFilterDTO;
+import com.concat.projetointegrador.dto.BatchStockOrdinationDTO;
 import com.concat.projetointegrador.model.InboundOrder;
 import org.springframework.stereotype.Service;
 import com.concat.projetointegrador.exception.EntityNotFound;
@@ -25,6 +27,7 @@ public class BatchStockService {
 
     /**
      * Search for a batch stock by id
+     *
      * @param id Long - batch stock id
      * @return a batch stock if registered
      */
@@ -39,10 +42,11 @@ public class BatchStockService {
 
     /**
      * Fetches a list of batch stock, filters by validity and sorts if you pass the parameter
+     *
      * @param inboundOrderList - inbound order list
-     * @param numberOfDays Integer - number of days to expiration
-     * @param category String - batch stock category
-     * @param asc Integer - sorting type
+     * @param numberOfDays     Integer - number of days to expiration
+     * @param category         String - batch stock category
+     * @param asc              Integer - sorting type
      * @return a list of Batch Stock Filter DTO
      * @throws InvalidParameterException - returns an exception if the sort parameter is not zero or one
      */
@@ -85,6 +89,7 @@ public class BatchStockService {
 
     /**
      * Save a batch stock
+     *
      * @param batchStock - batch stock object to insert
      * @return a batch stock
      */
@@ -94,7 +99,8 @@ public class BatchStockService {
 
     /**
      * Search a batch stock list by product id and quantity
-     * @param id Long - product id
+     *
+     * @param id       Long - product id
      * @param quantity Integer - product quantity
      * @return a batch stock list
      */
@@ -112,7 +118,8 @@ public class BatchStockService {
 
     /**
      * Fetches a batch stock list by product id and sorts it from the parameter
-     * @param id Long - product id
+     *
+     * @param id      Long - product id
      * @param orderBy String - parameter for sorting ("L", "C", "F", null)
      * @return a list of batch stock that can be sorted
      */
@@ -147,6 +154,7 @@ public class BatchStockService {
 
     /**
      * fetches a list of batch stock by product id that are at least three weeks before expiry
+     *
      * @param id Long - product id
      * @return a list of batch stock within the validity period
      */
@@ -156,12 +164,27 @@ public class BatchStockService {
                 .stream()
                 .filter(batchStock
                                 -> (ChronoUnit.WEEKS.between(
-                        LocalDate.now(),
-                        batchStock.getDueDate()
+                                LocalDate.now(),
+                                batchStock.getDueDate()
                         ) >= 3) && (
                                 batchStock.getCurrentQuantity() > 0
                         )
                 ).collect(Collectors.toList());
         return batchStocks;
+    }
+
+    /**
+     * Search for best selling products
+     * @return the products in order of the best sellers to the least sold
+     */
+    public List<BatchStockOrdinationDTO> listProductsForQuantity() {
+        List<BatchStock> batchStock = batchStockRepository.findAll();
+        if (batchStock.isEmpty()) {
+            throw new EntityNotFound("Não existem batchstock registados!");
+        }
+        List<BatchStockOrdinationDTO> listBatchStockForQuantityDesc = batchStock.stream().map(batchStocks -> (
+                BatchStockOrdinationDTO.map(batchStocks.getCurrentQuantity(), batchStocks.getInitialQuantity(), batchStocks.getProduct()))).collect(Collectors.toList());
+        listBatchStockForQuantityDesc.sort((i, f) -> i.getQuantity().compareTo(f.getQuantity()));
+        return listBatchStockForQuantityDesc;
     }
 }
