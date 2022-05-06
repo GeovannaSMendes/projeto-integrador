@@ -46,3 +46,18 @@ URL Base: localhost:8080/api/v1/fresh-products
 - [Renato Graça](https://github.com/renatograca)
 - [Vinícios Fraga](https://github.com/itIsV)
 
+## Requisito 6
+
+O objetivo deste projeto é buscar os produtos pelos mais vendidos para fazer o controle de estoque, gerar relatórios para compras futuros e planos de ação.
+
+Endpoints
+Arquivo de rotas do Postman: [postman_collection_requisito_6.json](https://github.com/GeovannaSMendes/projeto-integrador/blob/develop/postman/Requisito%206%20-%20projeto%20integrador.postman_collection.json)
+
+URL Base: localhost:8080/api/v1/fresh-products
+
+| Tipo   | URI       | Função    | Payload |
+| :---------- | :--------- | :----------------------- |:------------------- |
+| `GET` | `/batchstock/stock` | Busca produtos pelos mais vendidos | --
+
+## Autores
+- [Geovanna Mendes](https://github.com/GeovannaSMendes)
