@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "6a0a3b33-27ec-4f1b-8a51-f31abd044f7b",
+		"name": "Requisito 6 - projeto integrador",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Consultar produtos mais vendidos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZW8xMjMiLCJ0b2tlbi10eXBlIjoicmVmcmVzaC10b2tlbiIsInJvbGVzIjpbIkFETUlOIl0sImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hcGkvdjEvbG9naW4iLCJleHAiOjE2NTE2Nzk3NDF9.BsSgwIMoTe7Jzh4XtrK9SQlfyenOB5iXJA1W4tHC-AM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/fresh-products/products/sold",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"products",
+						"sold"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
